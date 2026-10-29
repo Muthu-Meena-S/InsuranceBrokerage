@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="InsuranceBrokerage.AI/InsuranceBrokerage.AI.csproj" />
+  <Project Path="InsuranceBrokerage.Api/InsuranceBrokerage.Api.csproj" />
+  <Project Path="InsuranceBrokerage.Application/InsuranceBrokerage.Application.csproj" />
+  <Project Path="InsuranceBrokerage.Domain/InsuranceBrokerage.Domain.csproj" />
+  <Project Path="InsuranceBrokerage.Infrastructure/InsuranceBrokerage.Infrastructure.csproj" />
+  <Project Path="InsuranceBrokerage.McpServer/InsuranceBrokerage.McpServer.csproj" />
+</Solution>
