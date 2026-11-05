@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emirates Insurance Brokerage | AI Orchestrator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0F5132;
+            --primary-light: #198754;
+            --primary-dark: #0a3622;
+            --accent: #D4AF37;
+            --accent-hover: #b89628;
+            --bg: #F8F9FA;
+            --surface: #FFFFFF;
+            --border: #E5E7EB;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --badge-bg: #E8F5E9;
+            --badge-text: #1B5E20;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 1.25rem 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-brand .flag {
+            font-size: 2rem;
+        }
+
+        .header-brand h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .header-brand p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-top: 0.15rem;
+        }
+
+        .status-strip {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.12);
+            padding: 0.4rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10B981;
+            box-shadow: 0 0 6px #10B981;
+        }
+
+        /* Main Container */
+        .app-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 1.5rem;
+            max-width: 1440px;
+            margin: 1.5rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Chat Panel */
+        .chat-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            height: calc(100vh - 150px);
+        }
+
+        .chat-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #FAFAFA;
+        }
+
+        .chat-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .message-row {
+            display: flex;
+            gap: 0.75rem;
+            max-width: 85%;
+        }
+
+        .message-row.user {
+            margin-left: auto;
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            background: #EEF2F6;
+        }
+
+        .message-row.user .avatar {
+            background: var(--primary);
+            color: white;
+        }
+
+        .message-bubble {
+            padding: 1rem 1.25rem;
+            border-radius: 1rem;
+            font-size: 0.92rem;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .message-row.assistant .message-bubble {
+            background: #F9FAFB;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .message-row.user .message-bubble {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        /* Tool Badge */
+        .tool-badge-container {
+            margin-top: 0.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .tool-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            border: 1px solid #C8E6C9;
+            padding: 0.35rem 0.65rem;
+            border-radius: 0.5rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        /* Suggestions Strip */
+        .suggestions-bar {
+            padding: 0.75rem 1.5rem;
+            background: #FCFCFC;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .suggestion-chip {
+            background: white;
+            border: 1px solid #D1D5DB;
+            padding: 0.4rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .suggestion-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #F0FDF4;
+        }
+
+        /* Chat Input */
+        .chat-input-area {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.75rem;
+            background: white;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.85rem 1.25rem;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input-area input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.1);
+        }
+
+        .send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .send-btn:hover {
+            background: var(--primary-light);
+        }
+
+        /* Right Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .side-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        .side-card h3 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lifecycle-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .lifecycle-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .step-info h4 {
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .step-info p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        .tools-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .tool-item {
+            background: #F9FAFB;
+            border: 1px solid var(--border);
+            padding: 0.6rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.78rem;
+        }
+
+        .tool-item-name {
+            font-weight: 700;
+            color: #1F2937;
+            font-family: monospace;
+        }
+
+        .tool-item-desc {
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            margin-top: 0.2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .app-layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-brand">
+            <span class="flag">🇦🇪</span>
+            <div>
+                <h1>Emirates Insurance Brokerage</h1>
+                <p>Autonomous AI Orchestrator with Model Context Protocol (MCP)</p>
+            </div>
+        </div>
+        <div class="status-strip">
+            <div class="status-pill">
+                <span class="dot"></span>
+                <span>MCP Server: Port 3001</span>
+            </div>
+            <div class="status-pill">
+                <span class="dot"></span>
+                <span>SQL Server DB: Connected</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout">
+        <!-- Main Chat UI -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>💬 AI Insurance Advisor & Workflow Assistant</h2>
+                <span style="font-size: 0.78rem; color: var(--text-muted);">Under Central Bank of UAE (CBUAE) Regulations</span>
+            </div>
+
+            <div class="chat-messages" id="messagesContainer">
+                <div class="message-row assistant">
+                    <div class="avatar">🤖</div>
+                    <div class="message-bubble">
+                        Welcome to the <strong>Emirates Insurance Brokerage AI Portal</strong>!
+
+I am an autonomous agent integrated with the <strong>Model Context Protocol (MCP) Server</strong>. I can guide you through the entire insurance brokerage lifecycle across the UAE:
+• Register customer leads
+• Submit insurance applications
+• Perform underwriting reviews
+• Generate comparative quotes from <strong>Sukoon, ADNIC, and Orient</strong>
+• Issue unified policy certificates
+
+How can I assist you today?
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Suggestion Chips -->
+            <div class="suggestions-bar">
+                <div class="suggestion-chip" onclick="sendQuickPrompt('What insurance products do you offer?')">📋 Show Products</div>
+                <div class="suggestion-chip" onclick="sendQuickPrompt('I want to create a motor insurance lead')">🚗 Create Motor Lead</div>
+                <div class="suggestion-chip" onclick="sendQuickPrompt('Show all active leads in the database')">👥 List All Leads</div>
+                <div class="suggestion-chip" onclick="sendQuickPrompt('I want to submit an insurance application for my lead')">📝 Submit Application</div>
+                <div class="suggestion-chip" onclick="sendQuickPrompt('Please review and approve application #1')">✅ Underwrite App #1</div>
+                <div class="suggestion-chip" onclick="sendQuickPrompt('Propose quotes for application #1')">📊 Get Quotes</div>
+                <div class="suggestion-chip" onclick="sendQuickPrompt('Select quote #1 and issue policy')">📜 Issue Policy</div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-area">
+                <input type="text" id="userInput" placeholder="Ask anything, or instruct the AI to manage leads, applications, quotes, or policies..." onkeydown="handleKeyDown(event)">
+                <button class="send-btn" onclick="sendMessage()">
+                    <span>Send</span>
+                    <span>➤</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Lifecycle Sidebar -->
+        <div class="sidebar">
+            <div class="side-card">
+                <h3>🔄 UAE Brokerage Lifecycle</h3>
+                <div class="lifecycle-step">
+                    <div class="step-num">1</div>
+                    <div class="step-info">
+                        <h4>Lead Acquisition</h4>
+                        <p>Customer contact & preliminary interest (Motor, Health, Property).</p>
+                    </div>
+                </div>
+                <div class="lifecycle-step">
+                    <div class="step-num">2</div>
+                    <div class="step-info">
+                        <h4>Application Submission</h4>
+                        <p>Emirates ID, vehicle specs, and requested coverage in AED.</p>
+                    </div>
+                </div>
+                <div class="lifecycle-step">
+                    <div class="step-num">3</div>
+                    <div class="step-info">
+                        <h4>Underwriting Review</h4>
+                        <p>Risk assessment and decision (Approved / Rejected).</p>
+                    </div>
+                </div>
+                <div class="lifecycle-step">
+                    <div class="step-num">4</div>
+                    <div class="step-info">
+                        <h4>Quotes Comparison</h4>
+                        <p>Multi-insurer rates (Sukoon, ADNIC, Orient).</p>
+                    </div>
+                </div>
+                <div class="lifecycle-step">
+                    <div class="step-num">5</div>
+                    <div class="step-info">
+                        <h4>Policy Issuance</h4>
+                        <p>Official unified policy number and Central Bank logging.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-card">
+                <h3>⚡ Exposed MCP Tools</h3>
+                <div class="tools-list" id="toolsList">
+                    <div class="tool-item">
+                        <div class="tool-item-name">CreateLead</div>
+                        <div class="tool-item-desc">Registers prospect in SQL Server</div>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-item-name">CreateApplication</div>
+                        <div class="tool-item-desc">Submits formal brokerage application</div>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-item-name">ReviewApplication</div>
+                        <div class="tool-item-desc">Underwriter decision & comments</div>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-item-name">ProposeQuotes</div>
+                        <div class="tool-item-desc">Fetches comparative quotes from UAE insurers</div>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-item-name">SelectQuoteAndIssuePolicy</div>
+                        <div class="tool-item-desc">Issues official UAE policy certificate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // @ts-nocheck
+        let conversationHistory = [];
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            if (!input || !(input instanceof HTMLInputElement)) return;
+            const text = input.value.trim();
+            if (!text) return;
+
+            appendMessage('user', text, []);
+            input.value = '';
+
+            // Add user turn to conversation history
+            conversationHistory.push({ role: 'user', content: text });
+
+            const loadingId = appendLoading();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        conversationHistory: conversationHistory
+                    })
+                });
+
+                removeLoading(loadingId);
+
+                if (!response.ok) {
+                    appendMessage('assistant', '⚠️ Error contacting the AI orchestrator.', []);
+                    return;
+                }
+
+                const data = await response.json();
+                
+                // Add assistant response to conversation history for multi-turn context
+                if (data.reply) {
+                    conversationHistory.push({ role: 'assistant', content: data.reply });
+                }
+
+                appendMessage('assistant', data.reply, data.toolsExecuted || []);
+            } catch (err) {
+                removeLoading(loadingId);
+                appendMessage('assistant', '⚠️ Could not connect to the AI Orchestrator service. Ensure InsuranceBrokerage.AI is running.', []);
+            }
+        }
+
+        function sendQuickPrompt(prompt) {
+            const input = document.getElementById('userInput');
+            if (input && input instanceof HTMLInputElement) {
+                input.value = prompt;
+                sendMessage();
+            }
+        }
+
+        function handleKeyDown(event) {
+            if (event && event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function appendMessage(role, text, tools = []) {
+            const container = document.getElementById('messagesContainer');
+            if (!container) return;
+
+            const row = document.createElement('div');
+            row.className = `message-row ${role}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            avatar.textContent = role === 'user' ? '👤' : '🤖';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.innerHTML = formatMarkdown(text);
+
+            if (tools && Array.isArray(tools) && tools.length > 0) {
+                const badgeContainer = document.createElement('div');
+                badgeContainer.className = 'tool-badge-container';
+                tools.forEach(t => {
+                    const badge = document.createElement('div');
+                    badge.className = 'tool-badge';
+                    badge.innerHTML = `<span>⚡</span> <span><strong>MCP Tool Executed:</strong> ${t.toolName} — ${t.summary}</span>`;
+                    badgeContainer.appendChild(badge);
+                });
+                bubble.appendChild(badgeContainer);
+            }
+
+            row.appendChild(avatar);
+            row.appendChild(bubble);
+            container.appendChild(row);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendLoading() {
+            const container = document.getElementById('messagesContainer');
+            if (!container) return '';
+
+            const row = document.createElement('div');
+            const id = 'loading-' + Date.now();
+            row.id = id;
+            row.className = 'message-row assistant';
+            row.innerHTML = `
+                <div class="avatar">🤖</div>
+                <div class="message-bubble" style="color: var(--text-muted); font-style: italic;">
+                    Thinking & querying MCP Server...
+                </div>
+            `;
+            container.appendChild(row);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function removeLoading(id) {
+            if (!id) return;
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function formatMarkdown(text) {
+            if (!text) return '';
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+    </script>
+</body>
+</html>
+

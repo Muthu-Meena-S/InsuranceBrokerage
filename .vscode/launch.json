@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Insurance Brokerage",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-ai",
+      "program": "${workspaceFolder}/InsuranceBrokerage.AI/bin/Debug/net10.0/InsuranceBrokerage.AI.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/InsuranceBrokerage.AI",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5051"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}"
+      }
+    }
+  ]
+}
+

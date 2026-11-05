@@ -1,0 +1,21 @@
+
+# Visual Studio temporary files
+.vs/
+**/bin/
+**/obj/
+
+# User-specific files
+*.user
+*.suo
+
+# Secrets and environment settings
+.env
+.env.*
+!.env.example
+
+# Local databases
+*.mdf
+*.ldf
+
+# Build logs
+*.binlog
